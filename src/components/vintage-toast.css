@@ -1,0 +1,20 @@
+/* Custom Toast Styles */
+.Toastify__toast-container {
+    font-family: 'Courier New';
+  }
+  
+  .Toastify__toast {
+    background-color: #0b0127 !important;  /* Dark background */
+    border-radius: 10px;
+    color: #bed1e4 !important;  /* Custom text color */
+    border: 1px solid #1976D2;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+    font-size: 18px;
+    padding: 16px;
+    margin: 10px 0;
+  }
+  
+  .Toastify__close-button {
+    color: #1976D2 !important;
+  }
+  
