@@ -12,12 +12,9 @@ export default function Services({ getValues }) {
   const navigate = useNavigate();
   const [errors, setErrors] = useState({ taskName: "", taskTime: "" });
   const taskTime = useRef();
-  console.log('API URL:', import.meta.env.VITE_API_URL);
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
   const postData = async ()=>{
     try{
-      console.log('Posting to:', `${API_URL}/tasks`);
-      const response = await axios.post(`${API_URL}/tasks`,{
+      const response = await axios.post("https://focusflow-backend-production.up.railway.app/tasks",{
        taskname: taskName.current.value,
        tasktime: taskTime.current.value
       })

@@ -55,7 +55,7 @@ export default function Task() {
     // }
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/tasks");
+        const response = await axios.get("https://focusflow-backend-production.up.railway.app/tasks");
         const tasks = response.data;
         const len = tasks.length;
         console.log(response.data[len - 1]);
