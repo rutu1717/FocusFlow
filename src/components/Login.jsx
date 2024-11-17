@@ -1,23 +1,26 @@
 import React, { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 import StuImg from "../assets/ft.png";
-import { ToastContainer,toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 function Login() {
   const email = useRef();
   const password = useRef();
   const navigate = useNavigate();
-  const handleLogin = async (email,password) => {
+  const handleLogin = async (email, password) => {
     try {
-      const response = await axios.post("https://focusflow-backend-production.up.railway.app/login", {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        "https://focusflow-backend-production.up.railway.app/login",
+        {
+          email,
+          password,
+        }
+      );
       localStorage.setItem("token", response.data.token);
       toast.success("Login Successful");
-      setTimeout(()=>{
-        navigate('/');
-      },2000)
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
     } catch (error) {
       console.error("Login error", error);
       alert("Invalid email or password");
@@ -41,17 +44,24 @@ function Login() {
             ref={password}
             style={styles.input}
           />
-          <button onClick={()=>{handleLogin(email.current.value,password.current.value)}} style={styles.button}>
+          <button
+            onClick={() => {
+              handleLogin(email.current.value, password.current.value);
+            }}
+            style={styles.button}
+          >
             Log In
           </button>
           <div style={{ display: "flex", justifyContent: "center" }}>
-            <p style={{ fontSize: "18px", fontFamily:"monospace"}}>Don't have an account?</p>
-            <a
+            <p style={{ fontSize: "18px", fontFamily: "monospace" }}>
+              Don't have an account?
+            </p>
+            <Link
+              to="/signup"
               style={{ marginTop: "18px", textDecoration: "underline" }}
-              href="/signup"
             >
               Signup
-            </a>
+            </Link>
           </div>
         </div>
       </div>
