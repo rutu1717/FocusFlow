@@ -4,46 +4,39 @@ import Dialog from "./Dialog";
 import AccessAlarmSharpIcon from "@mui/icons-material/AccessAlarmSharp";
 import { useState, useEffect, useRef } from "react";
 import { toast, ToastContainer } from "react-toastify";
-export default function Task({ taskName, taskTime }) {
+import axios from "axios";
+export default function Task() {
   const [isSessionDialogOpen, setSessionDialogOpen] = useState(false);
   const [isAllSessionsDialogOpen, setAllSessionsDialogOpen] = useState(false);
   const [timeleft, settimeleft] = useState(25 * 60);
+  const [tasktime, settasktime] = useState(0);
   const [isrunning, setisrunning] = useState(false);
-  const [taskname,settaskname] = useState(()=>{
-    const savedTaskName = sessionStorage.getItem('taskName');
-    if(!savedTaskName){
-      sessionStorage.setItem('taskName',taskName);
-      return taskName;
-    }else{
-      return savedTaskName;
-    }
-  });
-  const [compleatesessions, setcompleatesessions] = useState(()=>{
-    const savedCompletesessions = sessionStorage.getItem('completesessions');
-    if(savedCompletesessions===null){
-      sessionStorage.setItem('completesessions',0);
+  const [taskname, settaskname] =
+    useState(); //()=>{
+    //   const savedTaskName = sessionStorage.getItem('taskName');
+    //   if(!savedTaskName){
+    //     sessionStorage.setItem('taskName',taskName);
+    //     return taskName;
+    //   }else{
+    //     return savedTaskName;
+    //   }
+    // });
+  const [compleatesessions, setcompleatesessions] = useState(() => {
+    const savedCompletesessions = sessionStorage.getItem("completesessions");
+    if (savedCompletesessions === null) {
+      sessionStorage.setItem("completesessions", 0);
       return 0;
-    }else{
-      console.log("hola amigo");
+    } else {
       return parseInt(savedCompletesessions);
     }
   });
-  const [pomosessions, setpomosession] = useState(()=>{
-    const savedTaskTime = sessionStorage.getItem('pomos');
-    if(!savedTaskTime){
-      sessionStorage.setItem('pomos',Math.floor(taskTime/25));
-      return Math.floor(taskTime/25);
-    }else{
-      return savedTaskTime;
-    }
-  }
-  );
+  const [pomosessions, setpomosession] = useState();
   const intervalRef = useRef(null);
   const StartTimer = () => {
     if (!isrunning && timeleft) {
       setisrunning(true);
       intervalRef.current = setInterval(() => {
-        settimeleft((prev) => prev - 1);
+        settimeleft((prev) => prev - 300);
       }, 1000);
     }
   };
@@ -55,35 +48,51 @@ export default function Task({ taskName, taskTime }) {
     StopTimer();
     settimeleft(25 * 60);
   };
-  useEffect(()=>{
-    let taskn = sessionStorage.getItem('taskName');
-    if(!taskn){
-      sessionStorage.setItem('taskName',taskName);
-    }
-  },[])
- 
+  useEffect(() => {
+    // let taskn = sessionStorage.getItem('taskName');
+    // if(!taskn){
+    //   sessionStorage.setItem('taskName',taskName);
+    // }
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/tasks");
+        const tasks = response.data;
+        const len = tasks.length;
+        console.log(response.data[len - 1]);
+        // settaskname(taskname);
+        const task = response.data[len - 1];
+        settaskname(task.taskname);
+        settasktime(parseInt(task.tasktime));
+        setpomosession((task.tasktime)/25);
+      } catch (error) {
+        console.log("The Error is", error.message);
+      }
+    };
+    fetchData();
+  }, []);
+
   useEffect(() => {
     if (timeleft === 0) {
       setcompleatesessions((prev) => {
         const newcompleates = prev + 1;
-        sessionStorage.setItem('completesessions', newcompleates);
+        sessionStorage.setItem("completesessions", newcompleates);
         return newcompleates;
       });
       setpomosession((prev) => {
-        const newpomos = prev-1;
-        if(newpomos>0){
+        const newpomos = prev - 1;
+        if (newpomos > 0) {
           setSessionDialogOpen(true);
-        }else{
+        } else {
           setAllSessionsDialogOpen(true);
         }
-        sessionStorage.setItem('pomos',newpomos)
+        sessionStorage.setItem("pomos", newpomos);
         return newpomos;
       });
       if (pomosessions) {
         ResetTimer();
       }
     }
-  }, [timeleft,pomosessions]);
+  }, [timeleft, pomosessions]);
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
     const seconds = time % 60;
@@ -165,14 +174,14 @@ const styles = {
   taskName: {
     color: "#C2B280",
     fontSize: "32px",
-    textTransform:"uppercase",
+    textTransform: "uppercase",
     marginBottom: "10px",
     textAlign: "center",
     fontWeight: "600",
     wordBreak: "break-word",
     overflow: "hidden",
-    maxHeight: "80px", 
-    lineHeight: "40px", 
+    maxHeight: "80px",
+    lineHeight: "40px",
   },
   sessionInfo: {
     fontSize: "20px",
