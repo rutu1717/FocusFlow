@@ -2,8 +2,11 @@
 import { useState } from "react"
 import Navbar from "./components/Appbar"
 import MainContent from "./components/Header"
+import { ProtectedRoute } from "./components/Protected"
 import Services from "./components/Services"
 import Task from "./components/Task"
+import Login from "./components/Login"
+import Signup from "./components/Signup"
 import { BrowserRouter,Routes,Route } from "react-router-dom"
 function App() {
   const [taskName,settaskName]=useState("");
@@ -15,12 +18,13 @@ function App() {
   return(
     <BrowserRouter>
     <Routes>
-      <Route path="/" element={<><Navbar button={true}/><MainContent/></>}/>
-      <Route path="/services" element={<Services getValues={getValues}/>}/>
-      <Route path="/task" element={<Task taskName={taskName} taskTime={taskTime}/>}/>
+      <Route path="/login" element={<Login/>} />
+      <Route path="/" element={<ProtectedRoute><Navbar/><MainContent/></ProtectedRoute>}/>
+      <Route path="/services" element={<ProtectedRoute><Services getValues={getValues}/></ProtectedRoute>}/>
+      <Route path="/task" element={<ProtectedRoute><Task taskName={taskName} taskTime={taskTime}/></ProtectedRoute>}/>
+      <Route path="/signup" element={<Signup/>}/>
     </Routes>
     </BrowserRouter>
-    
   )
 }
 

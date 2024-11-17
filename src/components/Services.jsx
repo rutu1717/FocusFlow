@@ -1,14 +1,32 @@
 import Navbar from "./Appbar";
+import {v4 as uuidv4} from 'uuid';
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 import { ToastContainer, toast } from "react-toastify";
 import "./vintage-toast.css";
 import "react-toastify/dist/ReactToastify.css";
+
 export default function Services({ getValues }) {
   const taskName = useRef();
   const navigate = useNavigate();
   const [errors, setErrors] = useState({ taskName: "", taskTime: "" });
   const taskTime = useRef();
+  console.log('API URL:', import.meta.env.VITE_API_URL);
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+  const postData = async ()=>{
+    try{
+      console.log('Posting to:', `${API_URL}/tasks`);
+      const response = await axios.post(`${API_URL}/tasks`,{
+       taskname: taskName.current.value,
+       tasktime: taskTime.current.value
+      })
+      console.log("Response",response.data);
+    }catch(error){
+      console.error('Error:', error);
+      console.log("Error is",error.message);
+    }
+  }
   const ValidateInput = (taskname, tasktime) => {
     const newerrors = { taskName: "", taskTime: "" };
     if (!taskname) {
@@ -39,6 +57,7 @@ export default function Services({ getValues }) {
       ValidateInput(taskName.current.value, parseInt(taskTime.current.value))
     ) {
       toast.success("Task Added Successfully");
+      postData();
       getValues(taskName.current.value, parseInt(taskTime.current.value));
       setTimeout(()=>{
         navigate('/task');
@@ -48,7 +67,7 @@ export default function Services({ getValues }) {
   };
   return (
     <div>
-      <Navbar button={false} />
+      <Navbar/>
       <div
         style={{
           display: "flex",
