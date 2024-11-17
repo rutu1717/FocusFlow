@@ -8,9 +8,10 @@ function Signup() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
   const handleSignup = async (email,password) => {
     try {
-      const response = await axios.post("http://localhost:8080/register", {
+      const response = await axios.post(`${API_URL}/register`, {
         email,
         password
       });
