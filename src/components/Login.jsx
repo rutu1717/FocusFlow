@@ -9,7 +9,7 @@ function Login() {
   const navigate = useNavigate();
   const handleLogin = async (email,password) => {
     try {
-      const response = await axios.post("http://localhost:8080/login", {
+      const response = await axios.post("https://focusflow-backend-production.up.railway.app/login", {
         email,
         password,
       });
