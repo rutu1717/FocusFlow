@@ -36,7 +36,7 @@ export default function Task() {
     if (!isrunning && timeleft) {
       setisrunning(true);
       intervalRef.current = setInterval(() => {
-        settimeleft((prev) => prev - 300);
+        settimeleft((prev) => prev - 1);
       }, 1000);
     }
   };
